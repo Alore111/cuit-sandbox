@@ -4,7 +4,9 @@
 拖拽浏览、点击看建筑详情、搜索定位、昼夜切换，还带一个 **ArcMap 风格的在线编辑器**，
 不写代码就能改建筑轮廓、类型与配色。换学校只改 JSON，不动代码。
 
-**快速预览**：克隆后 `cd 4ct_ctmap && npm install && npm run dev:all`，
+**在线浏览**：<https://cuit.can6.top/>
+
+**本地预览**：克隆后 `cd 4ct_ctmap && npm install && npm run dev:all`，
 浏览器打开 <http://localhost:5173/>（编辑器在 `/editor`）。
 
 ## 特性
