@@ -1,0 +1,26 @@
+{
+  "name": "3ct_api",
+  "version": 1,
+  "headers": [
+    {
+      "key": "Authorization",
+      "value": "Bearer <your-token-here>",
+      "enabled": false
+    }
+  ],
+  "endpoints": {
+    "url": "https://api.3ct.f.can6.top/api/campus-live/events/",
+    "method": "GET",
+    "listDataPath": "",
+    "detailDataPath": "",
+    "enableDetailEndpoint": true,
+    "detailUrlTemplate": "https://api.3ct.f.can6.top/api/campus-live/events/{id}"
+  },
+  "searchEndpoints": {
+    "url": "https://api.3ct.f.can6.top/api/campus-live/events/search/",
+    "method": "GET",
+    "listDataPath": ""
+  },
+  "fieldMapping": {},
+  "savedAt": 1790738310709
+}

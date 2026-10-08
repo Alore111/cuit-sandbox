@@ -1,0 +1,51 @@
+/* ================================================================
+   统一定位铭牌样式（地点标注专用）
+   —— 无背景、纯文字描边、不承载点击；区别于事件铭牌卡。
+   ================================================================ */
+
+.locateLayer {
+    position: fixed;
+    /* 层级：高于 HUD(8) 与铭牌(6)，低于搜索栏(30) 与 splash(40)；
+       移动端（≤768）降级到 mobileRoot(7) 之下，避免盖住顶部搜索框 */
+    z-index: 20;
+    pointer-events: none; /* 不拦截任何点击，纯标注 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    transform: translate(-50%, -100%);
+    opacity: 1;
+    transition: opacity 160ms ease;
+    will-change: left, top;
+}
+
+/* 移动端：铭牌必须在 mobileRoot(z-index:7) 之下，不能压在搜索框上方 */
+@media (max-width: 767px) {
+    .locateLayer {
+        z-index: 5;
+    }
+}
+
+.locatePin {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    /* 纯描边三角：外层透明，仅边框用主题色描边 */
+    border-top: 10px solid var(--locate-accent, var(--amber));
+    filter: drop-shadow(0 0 2px var(--locate-accent, var(--amber)));
+}
+
+.locateTitle {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--amber);
+    white-space: nowrap;
+    /* 文字描边：先画一层深色描边再叠琥珀色文字，任何背景下都清晰 */
+    -webkit-text-stroke: 0.5px var(--locate-stroke, rgba(10, 12, 20, 0.85));
+    text-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.45),
+        0 0 10px var(--locate-accent, var(--amber));
+    padding: 2px 6px;
+}

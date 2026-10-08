@@ -1,0 +1,26 @@
+# ================================================================
+# 4ct_map 目录级忽略规则
+# （4ct_ctmap / 4ct_ctmap_server 各自有子级 .gitignore，此处补充目录级约定）
+# ================================================================
+
+# 依赖与构建产物
+node_modules/
+dist/
+*.local
+
+# 环境变量与备份（密钥、写盘前的原文件备份）
+.env
+*.bak
+
+# 本地调试与临时数据，不入库
+temp_data/
+docs/
+scripts/.basemap-cache/
+
+# 打包发布产物（zip 与变更记录通过 GitHub Release 分发，不入库）
+*.zip
+Changelogs.html
+Changelogs.json
+
+# 系统文件
+.DS_Store

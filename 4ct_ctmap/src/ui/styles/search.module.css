@@ -1,0 +1,352 @@
+/* ================================================================
+   搜索结果样式（共享：APP + PC）
+   —— 颜色全部走 tokens.css 变量，深浅主题自动跟随。
+   ================================================================ */
+
+/* ---------- 搜索结果容器 ---------- */
+.resultList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* ---------- 分段标题（"地点 12" / "活动 5"） ---------- */
+.sectionHead {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 4px 2px;
+}
+
+.sectionTitle {
+    font-size: var(--fs-small);
+    font-weight: 600;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+}
+
+.sectionCount {
+    font-size: var(--fs-tiny);
+    font-family: var(--font-mono);
+    color: var(--text-faint);
+    background: var(--panel-elevated);
+    border-radius: 6px;
+    padding: 1px 6px;
+}
+
+/* ---------- 列表堆叠 ---------- */
+.listStack {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* ---------- 地点行 ---------- */
+.placeRow {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    padding: 0;
+    transition: background 0.15s;
+}
+
+.placeRow:hover {
+    background: var(--panel-hover);
+}
+
+/* ---------- 事件行 ---------- */
+.eventRow {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    padding: 0;
+    transition: background 0.15s;
+}
+
+.eventRow:hover {
+    background: var(--panel-hover);
+}
+
+/* ---------- 左侧强调色条 ---------- */
+.rowAccent {
+    width: 3px;
+    flex: none;
+    border-radius: 3px 0 0 3px;
+    background: var(--row-accent, var(--primary));
+    align-self: stretch;
+    margin: 6px 0;
+}
+
+/* ---------- 行内容 ---------- */
+.rowBody {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 10px;
+}
+
+.rowTitle {
+    font-size: var(--fs-body);
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rowMeta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--fs-tiny);
+    color: var(--text-dim);
+    flex-wrap: wrap;
+}
+
+.rowDot::before {
+    content: '·';
+    margin: 0 -2px;
+}
+
+.rowTag {
+    font-size: var(--fs-tiny);
+    color: var(--text-faint);
+    background: var(--panel-elevated);
+    border-radius: 4px;
+    padding: 1px 5px;
+    white-space: nowrap;
+}
+
+.rowDesc {
+    font-size: var(--fs-small);
+    color: var(--text-dim);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ---------- 空态 / 加载态 ---------- */
+.empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 32px 16px;
+    color: var(--text-dim);
+    font-size: var(--fs-body);
+}
+
+.emptyIcon {
+    font-size: 28px;
+    opacity: 0.4;
+}
+
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 24px 16px;
+    color: var(--text-dim);
+    font-size: var(--fs-body);
+}
+
+.loadingDot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--primary);
+    animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.3; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* ================================================================
+   PC 端搜索栏（画面正上方居中）
+   ================================================================ */
+
+.pcSearchTopBar {
+    pointer-events: auto;
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    /* 层级：高于 HUD(8) 与铭牌(6)，但必须低于 loading splash(40) */
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: min(480px, calc(100vw - 32px));
+}
+
+/* ================================================================
+   PC 端搜索面板（浮层）
+   ================================================================ */
+
+/* ---------- 搜索框容器 ---------- */
+.searchBox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    background: var(--panel-bg);
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+}
+
+.searchBox:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), 0 0 0 2px color-mix(in srgb, var(--primary) 20%, transparent);
+}
+
+.searchIcon {
+    font-size: 16px;
+    color: var(--text-faint);
+    flex: none;
+    line-height: 1;
+}
+
+.searchInput {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: var(--fs-body);
+    color: var(--text);
+    font-family: var(--font-ui);
+}
+
+.searchInput::placeholder {
+    color: var(--text-faint);
+}
+
+.searchClear {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    border: none;
+    border-radius: 50%;
+    background: var(--panel-hover);
+    color: var(--text-dim);
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.searchClear:hover {
+    background: var(--panel-border);
+    color: var(--text);
+}
+
+/* ================================================================
+   PC 端搜索面板（浮层，跟随顶部搜索框）
+   ================================================================ */
+
+.pcSearchPanel {
+    pointer-events: auto;
+    width: 100%;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    padding: 12px;
+    max-height: 50vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* PC 端搜索框行 */
+.pcSearchRow {
+    display: flex;
+    align-items: center;
+    gap: var(--gap);
+    pointer-events: auto;
+}
+
+/* ================================================================
+   APP 端搜索全屏页
+   ================================================================ */
+
+.appSearchPage {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 0;
+}
+
+/* APP 端搜索框（固定在顶部） */
+.appSearchBar {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--panel-divider);
+}
+
+.appSearchBar .searchBox {
+    flex: 1;
+}
+
+.appSearchBack {
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-dim);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.appSearchBack:hover {
+    background: var(--panel-hover);
+    color: var(--text);
+}
+
+/* APP 端搜索结果区域 */
+.appSearchResults {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 12px;
+}

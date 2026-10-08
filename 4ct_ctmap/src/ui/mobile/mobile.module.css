@@ -1,0 +1,924 @@
+/* ================================================================
+   移动端专属 UI —— 高德/百度地图式「单抽屉 + 磁吸四档」。
+   仅在 ≤ MOBILE_BREAKPOINT 时渲染，桌面端完全不受影响。
+   设计口径：
+     · 单一可拖拽底部抽屉 = 唯一信息载体（首页/搜索/实况/事件详情/楼栋详情都在抽屉里）；
+     · 抽屉磁吸四档：全收起 / 1/4 / 1/2 / 3/4 屏，随时可拖，松手吸附；
+     · 抽屉升起时，地图通过 stage.setBottomInset 上移，中心仍留在可视区中央；
+     · 全程只用 color-speech 令牌变量，深浅主题自动跟随。
+================================================================ */
+
+/* ---------- 移动端外壳：占满视口但不拦截地图手势 ---------- */
+.mobileRoot {
+    position: fixed;
+    inset: 0;
+    z-index: 7;
+    display: flex;
+    flex-direction: column;
+    pointer-events: none;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    /* 标题栏总高（含 margin）：上边距 10 + padding 10×2 + border 1×2 + 内容 ~30 */
+    --topbar-h: calc(10px + 10px + 2px + 30px + 10px);
+}
+
+/* ---------- 顶部标题栏 ---------- */
+.topBar {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 12px 0;
+    padding: 10px 12px;
+    border: 1px solid var(--panel-border);
+    border-radius: 14px;
+    background: var(--panel-bg);
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+}
+
+/* 顶栏圆徽：这里只声明展示尺寸，取像规则统一在 global.css 的 .schoolEmblem */
+.topBarMark {
+    --emblem-mark-size: 30px;
+}
+
+.topBarText {
+    min-width: 0;
+    flex: 1;
+}
+
+.topBarTitle {
+    font-size: 15px;
+    font-weight: 750;
+    line-height: 1.25;
+    letter-spacing: 0.2px;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.topBarSub {
+    margin-top: 2px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--text-faint);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.topBarActions {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.topBadge {
+    flex: none;
+    padding: 5px 9px;
+    border: 1px solid var(--panel-border-strong);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--panel-bg) 92%, transparent);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--amber);
+    white-space: nowrap;
+}
+
+/* 主题切换小圆钮 */
+.themeBtn {
+    flex: none;
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--panel-border);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--panel-bg) 90%, transparent);
+    color: var(--text-dim);
+    font-size: 14px;
+    cursor: pointer;
+    transition: color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+.themeBtn:active {
+    transform: scale(0.94);
+    color: var(--amber);
+    border-color: var(--amber);
+}
+
+/* ---------- 搜索框容器（标题栏下方、地图上方） ---------- */
+.searchBarOuter {
+    pointer-events: auto;
+    margin: 6px 12px 0;
+    padding: 0;
+}
+
+.searchBox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    background: var(--panel-bg);
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.searchBox:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15), 0 0 0 2px color-mix(in srgb, var(--primary) 20%, transparent);
+}
+
+.searchIcon {
+    font-size: 16px;
+    color: var(--text-faint);
+    flex: none;
+    line-height: 1;
+}
+
+.searchInput {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: var(--fs-body);
+    color: var(--text);
+    font-family: var(--font-ui);
+}
+
+.searchInput::placeholder {
+    color: var(--text-faint);
+}
+
+.searchClear {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    border: none;
+    border-radius: 50%;
+    background: var(--panel-elevated);
+    color: var(--text-dim);
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.searchClear:hover {
+    background: var(--panel-hover);
+    color: var(--text);
+}
+
+/* ---------- 搜索页面（抽屉内，搜索聚焦时展示） ---------- */
+.searchPage {
+    height: 100%;
+    overflow-y: auto;
+    padding: 8px 4px;
+}
+
+/* 标题栏下方、画面右上角：事件显示/隐藏切换按钮 */
+.eventsToggle {
+    position: absolute;
+    /* 搜索框高度约 44px + 间距 6px，topBar 下方偏移 */
+    top: calc(14px + var(--topbar-h, 58px) + 50px);
+    right: 12px;
+    z-index: 8;
+    pointer-events: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    border: 1px solid var(--panel-border);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--panel-bg) 92%, transparent);
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+    color: var(--text-dim);
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+.eventsToggle:active {
+    transform: scale(0.96);
+}
+.eventsToggle.isOn {
+    color: var(--amber);
+    border-color: color-mix(in srgb, var(--amber) 55%, transparent);
+    background: color-mix(in srgb, var(--amber) 12%, var(--panel-bg));
+}
+.eventsToggleDot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--text-faint);
+    transition: background 160ms ease;
+}
+.eventsToggle.isOn .eventsToggleDot {
+    background: var(--amber);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--amber) 22%, transparent);
+}
+
+/* ================================================================
+   底部抽屉（单一载体）
+   高度由 JS 写内联变量 --drawer-top（抽屉相对视口顶部的 Y），
+   抽屉盒直接用 top 定位：height 自动 = 视口高 − top，
+   内部内容容器高度随之变化，底部内容不会被推出屏外。
+================================================================ */
+.drawer {
+    pointer-events: auto;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: var(--drawer-top, 0px);
+    display: flex;
+    flex-direction: column;
+    background: var(--panel-bg);
+    border-top: 1px solid var(--panel-border);
+    border-radius: 22px 22px 0 0;
+    backdrop-filter: blur(24px) saturate(1.3);
+    -webkit-backdrop-filter: blur(24px) saturate(1.3);
+    box-shadow: 0 -18px 60px rgba(0, 0, 0, 0.45);
+    will-change: top;
+    /* 顶部圆角描边高光（玻璃感） */
+    overflow: hidden;
+    /* 默认：全收起态（仅露一条手把），起步渲染不闪烁 */
+}
+
+/* 拖动中：关闭 transition，直接跟手；松手吸附时再用 class 开启 */
+.drawer.isDragging {
+    transition: none;
+}
+.drawer.isSettling {
+    transition: top 0.42s cubic-bezier(0.32, 0.72, 0.24, 1);
+}
+
+/* 顶部高光细线（玻璃上缘） */
+.drawerGlow {
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+}
+
+/* ---------- 手把区 ---------- */
+.grabZone {
+    flex: none;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px 14px;
+    cursor: grab;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.grabBar {
+    width: 40px;
+    height: 5px;
+    border-radius: 999px;
+    background: var(--panel-border-strong);
+    transition: background 200ms ease;
+}
+.grabZone:active .grabBar,
+.isDragging .grabBar {
+    background: var(--amber);
+}
+
+/* 手把标题行：左侧当前意图，右侧可点手柄轨道（快速磁吸） */
+.grabRow {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.grabTitle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.grabDot {
+    width: 8px;
+    height: 8px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--amber);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--amber) 22%, transparent);
+}
+
+.grabLabel {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--text);
+}
+
+/* 档位指示：三个小点，越高亮越多代表展开越高 */
+.snapDots {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.snapDot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--panel-border-strong);
+    transition: background 200ms ease, transform 200ms ease;
+}
+.snapDot.on {
+    background: var(--amber);
+    transform: scale(1.25);
+}
+
+/* ---------- 抽屉内容 ---------- */
+.drawerBody {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.viewStage {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 面板切换动画：进入上滑淡入，离开下移渐隐 */
+.view {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    height: 100%;
+    animation: viewIn 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+@keyframes viewIn {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ---------- 首页 ---------- */
+.home {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 2px 16px 14px;
+}
+
+.searchBar {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--panel-border);
+    background: color-mix(in srgb, var(--panel-bg) 96%, transparent);
+    transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+.searchBar:focus-within {
+    border-color: color-mix(in srgb, var(--amber) 60%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--amber) 14%, transparent);
+}
+.searchIcon {
+    flex: none;
+    color: var(--text-faint);
+    font-size: 14px;
+    display: grid;
+    place-items: center;
+}
+.searchInput {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--text);
+    font-size: 13px;
+}
+.searchInput::placeholder {
+    color: var(--text-faint);
+}
+.searchClear {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    display: grid;
+    place-items: center;
+    border: none;
+    border-radius: 999px;
+    background: var(--panel-border-strong);
+    color: var(--text-faint);
+    font-size: 12px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.homeSection {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    flex: 1;
+}
+
+/* 校园实况：热度概览 + 事件列表 */
+.liveCard {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 13px;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--amber) 14%, var(--panel-bg)), var(--panel-bg));
+    border: 1px solid color-mix(in srgb, var(--amber) 26%, var(--panel-border));
+}
+
+.liveCardValue {
+    font-family: var(--font-mono);
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--amber);
+    line-height: 1;
+}
+
+.liveCardText {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.liveCardTitle {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+}
+.liveCardSub {
+    font-size: 10.5px;
+    color: var(--text-faint);
+}
+
+/* 分段标题（带计数） */
+.sectionHead {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 2px 8px;
+}
+.sectionTitle {
+    font-size: 12px;
+    font-weight: 750;
+    letter-spacing: 0.1em;
+    color: var(--text-faint);
+}
+.sectionCount {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--amber);
+}
+
+/* 滚动列表区 */
+.scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding-right: 2px;
+}
+.scroll::-webkit-scrollbar {
+    width: 3px;
+}
+.scroll::-webkit-scrollbar-thumb {
+    background: var(--panel-border-strong);
+    border-radius: 999px;
+}
+
+.listStack {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 2px 0 12px;
+}
+
+/* 事件条目 */
+.eventRow {
+    display: flex;
+    align-items: stretch;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 13px;
+    border: 1px solid var(--panel-border);
+    background: color-mix(in srgb, var(--panel-bg) 96%, transparent);
+    text-align: left;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: border-color 160ms ease, background 160ms ease, transform 120ms ease;
+}
+.eventRow:active {
+    transform: scale(0.982);
+    background: var(--panel-hover);
+    border-color: var(--panel-border-strong);
+}
+
+.eventRowAccent {
+    flex: none;
+    width: 4px;
+    border-radius: 2px;
+    background: var(--row-accent, var(--amber));
+}
+
+.eventRowBody {
+    flex: 1;
+    min-width: 0;
+}
+.eventRowTitle {
+    font-size: 13.5px;
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--text);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.eventRowMeta {
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    font-size: 10.5px;
+    color: var(--text-faint);
+}
+.eventRowDot {
+    width: 6px;
+    height: 6px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--row-accent, var(--amber));
+}
+.eventRowTag {
+    padding: 1px 6px;
+    border: 1px solid var(--panel-border);
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.04em;
+    color: var(--text-dim);
+}
+.eventRowDesc {
+    margin-top: 6px;
+    font-size: 11.5px;
+    line-height: 1.55;
+    color: var(--text-dim);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* 点击可展开的条目（搜索/实况结果展开成详情面板） */
+.expandRow {
+    position: relative;
+}
+.expandRow::after {
+    content: '';
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    border-right: 1.5px solid var(--text-faint);
+    border-bottom: 1.5px solid var(--text-faint);
+    transform: translateY(-70%) rotate(-45deg);
+}
+
+.empty {
+    padding: 30px 16px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-faint);
+    line-height: 1.7;
+}
+.emptyIcon {
+    display: block;
+    font-size: 26px;
+    margin-bottom: 8px;
+    opacity: 0.6;
+}
+
+/* ---------- 详情面板（事件/楼栋共用骨架） ---------- */
+.detailPanel {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.detailHead {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 16px 6px;
+}
+
+.backBtn {
+    flex: none;
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--panel-border);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--panel-bg) 92%, transparent);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 160ms ease, border-color 160ms ease;
+}
+.backBtn:active {
+    color: var(--amber);
+    border-color: var(--amber);
+}
+
+.detailKicker {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    color: var(--text-faint);
+}
+
+.detailBody {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 2px 18px calc(16px + env(safe-area-inset-bottom, 0px));
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.detailTitle {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.3;
+    color: var(--text);
+    letter-spacing: 0.2px;
+}
+
+.detailGrid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 7px 14px;
+    margin: 0;
+    padding: 13px 14px;
+    border: 1px solid var(--panel-divider);
+    border-radius: 13px;
+    background: color-mix(in srgb, var(--panel-bg) 96%, transparent);
+    font-size: 11.5px;
+}
+.detailGrid dt {
+    font-family: var(--font-mono);
+    letter-spacing: 0.1em;
+    color: var(--text-faint);
+    white-space: nowrap;
+    padding: 3px 0;
+}
+.detailGrid dd {
+    margin: 0;
+    font-family: var(--font-mono);
+    color: var(--text);
+    text-align: right;
+    padding: 3px 0;
+    overflow-wrap: anywhere;
+}
+
+.detailDesc {
+    margin: 0;
+    padding: 13px 14px;
+    border-radius: 13px;
+    border-left: 3px solid var(--panel-accent, var(--amber));
+    background: color-mix(in srgb, var(--panel-accent, var(--amber)) 7%, transparent);
+    color: var(--text);
+    font-size: 12px;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+.detailTags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.miniTag {
+    display: inline-block;
+    padding: 3px 9px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--text-dim);
+    border: 1px solid var(--panel-border);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--panel-bg) 96%, transparent);
+}
+
+/* 楼栋分类导航条 */
+.buildingCats {
+    flex: none;
+    display: flex;
+    gap: 6px;
+    padding: 2px 0 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.buildingCats::-webkit-scrollbar {
+    display: none;
+}
+
+.catChip {
+    flex: none;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--panel-border);
+    background: color-mix(in srgb, var(--panel-bg) 94%, transparent);
+    color: var(--text-dim);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 160ms ease;
+    white-space: nowrap;
+}
+.catChip.active {
+    color: var(--amber);
+    border-color: color-mix(in srgb, var(--amber) 55%, transparent);
+    background: color-mix(in srgb, var(--amber) 16%, transparent);
+}
+
+/* 楼栋间跳转快捷键 */
+.buildingStat {
+    flex: none;
+}
+.statLine {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--panel-border);
+    text-align: center;
+}
+.statLine b {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text);
+}
+.statLine span {
+    flex: 1;
+    font-size: 11px;
+    min-width: 0;
+}
+.goBtn {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 7px 12px;
+    border: none;
+    border-radius: 9px;
+    background: linear-gradient(135deg, var(--panel-accent, var(--amber)), color-mix(in srgb, var(--panel-accent, var(--amber)) 78%, #638cff));
+    color: #fff;
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 120ms ease;
+}
+.goBtn:active {
+    transform: scale(0.95);
+}
+
+/* 楼栋列表（首页搜索/实况的楼栋行） */
+.buildingGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 2px 0 12px;
+}
+
+.buildingRow {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px;
+    border-radius: 13px;
+    border: 1px solid var(--panel-border);
+    background: color-mix(in srgb, var(--panel-bg) 96%, transparent);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 160ms ease, background 160ms ease, transform 120ms ease;
+}
+.buildingRow:active {
+    transform: scale(0.98);
+    background: var(--panel-hover);
+}
+.buildingName {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+}
+.buildingMeta {
+    font-size: 10.5px;
+    color: var(--text-faint);
+}
+.buildingTag {
+    align-self: flex-start;
+    padding: 1px 7px;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--panel-accent, var(--amber));
+    border: 1px solid color-mix(in srgb, var(--panel-accent, var(--amber)) 40%, transparent);
+}
+
+/* 大按钮（跳转原页） */
+.detailJump {
+    appearance: none;
+    border: none;
+    outline: none;
+    width: 100%;
+    cursor: pointer;
+    padding: 14px 16px;
+    border-radius: 13px;
+    background: linear-gradient(135deg, var(--panel-accent, var(--amber)), color-mix(in srgb, var(--panel-accent, var(--amber)) 74%, #638cff));
+    color: #fff;
+    font-size: 13px;
+    font-weight: 650;
+    letter-spacing: 0.2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 8px 20px color-mix(in srgb, var(--panel-accent, var(--amber)) 30%, transparent);
+    transition: transform 120ms ease;
+}
+.detailJump:active {
+    transform: scale(0.978);
+}
+
+/* 滚动到底部的安全距离（避免被安全区手势条遮住） */
+.bottomPad {
+    height: env(safe-area-inset-bottom, 0px);
+    flex: none;
+}
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+    .drawer.isSettling,
+    .view {
+        transition: none;
+        animation: none;
+    }
+}

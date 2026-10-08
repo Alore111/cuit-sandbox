@@ -1,0 +1,36 @@
+{
+  "name": "4ct-ctmap",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "4CT 校园沙盘",
+  "scripts": {
+    "dev": "vite",
+    "dev:server": "npm --prefix ../4ct_ctmap_server run dev",
+    "dev:all": "concurrently -n server,web -c yellow,cyan \"npm:dev:server\" \"npm:dev\"",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "tsx scripts/check-world.ts",
+    "check:campus": "tsx --test scripts/check-campus-visuals.ts",
+    "basemap": "powershell -ExecutionPolicy Bypass -File scripts/fetch-basemap.ps1",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "gsap": "^3.15.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "three": "^0.169.0",
+    "zustand": "^5.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^18.3.17",
+    "@types/react-dom": "^18.3.5",
+    "@types/three": "^0.169.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7"
+  }
+}

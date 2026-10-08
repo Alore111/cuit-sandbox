@@ -1,0 +1,595 @@
+/* ================================================================
+   HUD 布局与面板样式
+   —— 整页以 3D 画布为底，面板绝对定位浮在其上。
+      布局遵循一条叙事：左上是主体信息，左下是数据来源与图例，
+      右侧留给选中建筑的详情，右下角只放操作提示。
+      颜色全部走 tokens.css 的变量，因此深浅主题自动跟随。
+================================================================ */
+
+.hudLayer {
+    position: fixed;
+    /* 高于事件铭牌层（.layer 为 z-index 6），确保面板浮动在铭牌之上，
+     * 铭牌不会盖住名录/品牌/右上角按钮等界面控件。 */
+    z-index: 8;
+    inset: 0;
+    pointer-events: none;
+    padding: var(--gap);
+    display: grid;
+    grid-template-columns: var(--roster-w) minmax(0, 1fr) var(--campus-live-w);
+    grid-template-rows: auto 1fr auto;
+    gap: var(--gap);
+}
+
+/* 校园实况面板：最右列占满全部3行，高度约束到视窗内可滚动 */
+.campusLive {
+    grid-column: 3;
+    grid-row: 1 / span 3;
+    align-self: stretch;
+    justify-self: stretch;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* 面板共用的玻璃质感 */
+.panel {
+    pointer-events: auto;
+    position: relative;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: var(--radius);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: var(--panel-shadow);
+}
+
+/* 面板四角的强调色切角线，与体素世界的直线语言呼应 */
+.panel::before,
+.panel::after {
+    content: none;
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    border-color: var(--amber);
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+.panel::before {
+    top: -1px;
+    left: -1px;
+    border-top: 1px solid;
+    border-left: 1px solid;
+}
+
+.panel::after {
+    bottom: -1px;
+    right: -1px;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+}
+
+.panelHead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 9px 12px 8px;
+    border-bottom: 1px solid var(--panel-divider);
+}
+
+.panelTitle {
+    font-size: var(--fs-small);
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    color: var(--text-dim);
+}
+
+.panelCount {
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    color: var(--amber);
+}
+
+/* ------------------------------ 品牌 ------------------------------ */
+
+.brand {
+    grid-column: 1;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+}
+
+/* 品牌位圆徽：这里只声明展示尺寸，取像规则统一在 global.css 的 .schoolEmblem */
+.brandMark {
+    --emblem-mark-size: 32px;
+}
+
+.brandTitle {
+    font-size: var(--fs-title);
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    line-height: 1.25;
+}
+
+.brandSub {
+    margin-top: 2px;
+    font-family: var(--font-mono);
+    font-size: var(--fs-tiny);
+    letter-spacing: 0.12em;
+    color: var(--text-faint);
+}
+
+/* ------------------------------ 建筑名录 ------------------------------ */
+
+.roster {
+    grid-column: 1;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+    padding: 0;
+}
+
+.panelScroll {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    min-height: 0;
+}
+
+.panelScroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.panelScroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.panelScroll::-webkit-scrollbar-thumb {
+    background: var(--panel-border-strong);
+    border-radius: 3px;
+}
+
+.rosterList {
+    list-style: none;
+    margin: 0;
+    padding: 4px;
+}
+
+.rosterItem {
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    background: none;
+    color: var(--text);
+    font-family: inherit;
+    font-size: var(--fs-body);
+    text-align: left;
+    cursor: pointer;
+    transition:
+        background 0.16s,
+        border-color 0.16s;
+}
+
+.rosterItem:hover {
+    background: var(--amber-glow);
+    border-color: var(--panel-border);
+}
+
+.rosterItemActive {
+    background: var(--amber-glow);
+    border-color: var(--panel-border-strong);
+}
+
+.rosterName {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.rosterMeta {
+    flex: none;
+    font-family: var(--font-mono);
+    font-size: var(--fs-tiny);
+    color: var(--text-faint);
+}
+
+/* ------------------------------ 图例 ------------------------------ */
+
+.legend {
+    grid-column: 1;
+    grid-row: 3;
+    align-self: end;
+    padding: 9px 12px 10px;
+}
+
+.legendHead {
+    padding: 0 0 8px;
+    border-bottom: 0;
+}
+
+.legendList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px 10px;
+}
+
+.legendItem {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--fs-small);
+    color: var(--text-dim);
+}
+
+.legendSwatch {
+    width: 10px;
+    height: 10px;
+    flex: none;
+    border: 1px solid var(--swatch-border);
+}
+
+.legendCount {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: var(--fs-tiny);
+    color: var(--text-faint);
+}
+
+.legendNote {
+    margin: 9px 0 0;
+    padding-top: 8px;
+    border-top: 1px solid var(--panel-divider);
+    font-size: var(--fs-tiny);
+    line-height: 1.55;
+    color: var(--text-faint);
+}
+
+/* ------------------------------ 详情 ------------------------------ */
+
+.detail {
+    grid-column: 2;
+    justify-self: end;
+    grid-row: 2;
+    align-self: start;
+    width: var(--detail-w);
+    padding: 14px 16px 16px;
+}
+
+.detailClose {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    width: 22px;
+    height: 22px;
+    border: 0;
+    background: none;
+    color: var(--text-faint);
+    font-size: 17px;
+    line-height: 1;
+    cursor: pointer;
+    /* 悬停改字色：给短过渡，避免被昼夜切换的全局长过渡拖慢 */
+    transition: color 0.16s;
+}
+
+.detailClose:hover {
+    color: var(--amber);
+}
+
+.detailType {
+    font-family: var(--font-mono);
+    font-size: var(--fs-tiny);
+    letter-spacing: 0.14em;
+    color: var(--amber);
+}
+
+.detailName {
+    margin: 5px 0 12px;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.detailGrid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 6px 12px;
+    margin: 0;
+    font-size: var(--fs-body);
+}
+
+.detailGrid dt {
+    color: var(--text-faint);
+    white-space: nowrap;
+}
+
+.detailGrid dd {
+    margin: 0;
+    font-family: var(--font-mono);
+    color: var(--text);
+    text-align: right;
+}
+
+.detailNote {
+    margin: 13px 0 0;
+    padding-top: 10px;
+    border-top: 1px solid var(--panel-divider);
+    font-size: var(--fs-tiny);
+    line-height: 1.6;
+    color: var(--text-faint);
+}
+
+/* ------------------------------ 右上角：主题开关与数据告警 ------------------------------ */
+
+.topRight {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.toggle {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 11px;
+    border: 1px solid var(--panel-border);
+    border-radius: var(--radius);
+    background: var(--panel-bg);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    /* 悬停改边框与字色：给短过渡，避免被昼夜切换的全局长过渡拖慢 */
+    transition: border-color 0.16s, color 0.16s;
+}
+
+.toggle:hover {
+    border-color: var(--panel-border-strong);
+    color: var(--amber);
+}
+
+/* 昼夜过渡进行中：切换按钮禁用，给出「动画中」的视觉反馈 */
+.toggle:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.toggleIcon {
+    font-size: 13px;
+    line-height: 1;
+    color: var(--amber);
+}
+
+/* ------------------------------ 数据告警 ------------------------------ */
+
+.warnBadge {
+    pointer-events: auto;
+    position: relative;
+    border: 1px solid var(--panel-border-strong);
+    border-radius: var(--radius);
+    background: var(--panel-bg);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    color: var(--amber);
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    padding: 8px 11px;
+    cursor: pointer;
+}
+
+.warnPanel {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 300px;
+    max-height: 40vh;
+    overflow-y: auto;
+    padding: 10px 12px;
+    border: 1px solid var(--panel-border);
+    border-radius: var(--radius);
+    background: var(--panel-bg);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: var(--panel-shadow);
+}
+
+.warnTitle {
+    margin: 0 0 6px;
+    font-size: var(--fs-small);
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+}
+
+.warnList {
+    margin: 0;
+    padding-left: 14px;
+    font-size: var(--fs-tiny);
+    line-height: 1.65;
+    color: var(--text-faint);
+}
+
+.warnList b {
+    color: var(--text-dim);
+    font-weight: 600;
+}
+
+/* ------------------------------ 视角预设 ------------------------------ */
+
+.viewBar {
+    grid-column: 2;
+    grid-row: 3;
+    justify-self: center;
+    align-self: end;
+    pointer-events: auto;
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    border: 1px solid var(--panel-border);
+    border-radius: var(--radius);
+    background: var(--panel-bg);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: var(--panel-shadow);
+}
+
+.viewBarBtn {
+    padding: 6px 12px;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    background: none;
+    color: var(--text-dim);
+    font-family: inherit;
+    font-size: var(--fs-small);
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition:
+        background 0.16s,
+        border-color 0.16s,
+        color 0.16s;
+}
+
+.viewBarBtn:hover {
+    border-color: var(--panel-border);
+    color: var(--amber);
+}
+
+.viewBarBtnActive {
+    border-color: var(--panel-border-strong);
+    background: var(--amber-glow);
+    color: var(--amber);
+}
+
+/* ------------------------------ 提示与跟随标签 ------------------------------ */
+
+.hint {
+    grid-column: 2;
+    grid-row: 3;
+    align-self: end;
+    justify-self: end;
+    margin-bottom: 46px;
+    pointer-events: none;
+    font-family: var(--font-mono);
+    font-size: var(--fs-tiny);
+    letter-spacing: 0.08em;
+    color: var(--text-faint);
+    text-shadow: 0 1px 6px var(--bg);
+}
+
+.tooltip {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 20;
+    pointer-events: none;
+    padding: 5px 9px;
+    border: 1px solid var(--panel-border-strong);
+    border-radius: 2px;
+    background: var(--tooltip-bg);
+    font-size: var(--fs-small);
+    white-space: nowrap;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+}
+
+.tooltip b {
+    color: var(--amber-soft);
+    font-weight: 600;
+}
+
+.tooltipMeta {
+    margin-left: 7px;
+    font-family: var(--font-mono);
+    font-size: var(--fs-tiny);
+    color: var(--text-faint);
+}
+
+/* ------------------------------ 窄屏 ------------------------------ */
+/* 窄屏收起名录与图例，只留详情与提示，避免面板把沙盘挤没 */
+.liveButton { display: none; }
+
+@media (max-width: 1200px) {
+    .hudLayer {
+        grid-template-columns: 1fr auto;
+    }
+
+    .roster,
+    .legend {
+        display: none;
+    }
+
+    .brand {
+        grid-column: 1;
+        min-width: 0;
+        max-width: 300px;
+    }
+
+    .topRight {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+    }
+
+    .detail {
+        grid-column: 2;
+        grid-row: 2;
+        width: min(var(--detail-w), 70vw);
+    }
+
+    .hint {
+        grid-column: 1;
+        grid-row: 3;
+        justify-self: start;
+    }
+
+    .campusLive { display: none; }
+    .liveButton { display: flex; }
+    .campusLive.liveOpen {
+        display: flex;
+        position: absolute;
+        top: 78px;
+        right: var(--gap);
+        bottom: 78px;
+        width: min(var(--campus-live-w), calc(100vw - var(--gap) * 2));
+        z-index: 4;
+    }
+    .viewBar { grid-column: 1 / -1; }
+    .hint { display: none; }
+}
+
+@media (max-width: 600px) {
+    .brand { padding: 9px; }
+    .brandMark { display: none; }
+    .brandTitle { font-size: 12px; }
+    .brandSub { font-size: 9px; letter-spacing: 0; }
+    .topRight { gap: 5px; flex-wrap: wrap; max-width: 180px; justify-content: flex-end; }
+    .toggle { padding: 9px 8px; font-size: 10px; }
+    .detail { width: min(var(--detail-w), calc(100vw - var(--gap) * 2)); }
+    .warnPanel { width: min(300px, calc(100vw - var(--gap) * 2)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .panel,
+    .rosterItem,
+    .toggle,
+    .viewBarBtn {
+        transition: none;
+    }
+}

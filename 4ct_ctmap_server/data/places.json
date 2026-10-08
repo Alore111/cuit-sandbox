@@ -1,0 +1,643 @@
+{
+  "version": 1,
+  "places": [
+    {
+      "name": "体育馆",
+      "mustInclude": [
+        "体育馆"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "543937617"
+      ],
+      "position": [
+        30.586152,
+        103.98654
+      ]
+    },
+    {
+      "name": "第二食堂",
+      "mustInclude": [
+        "第二食堂",
+        "二食堂"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "543937568"
+      ],
+      "position": [
+        30.584101,
+        103.981769
+      ]
+    },
+    {
+      "name": "图书馆",
+      "mustInclude": [
+        "图书馆"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "1064828425"
+      ],
+      "weight": 2,
+      "position": [
+        30.584465,
+        103.986971
+      ]
+    },
+    {
+      "name": "第一教学楼",
+      "mustInclude": [
+        "第一教学楼",
+        "一教",
+        "/H1[0-9]{3}/"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "1064792520"
+      ],
+      "position": [
+        30.582732,
+        103.986439
+      ]
+    },
+    {
+      "name": "探测楼",
+      "mustInclude": [
+        "探测楼"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "604096307"
+      ],
+      "position": [
+        30.586361,
+        103.990375
+      ]
+    },
+    {
+      "name": "第二教学楼",
+      "mustInclude": [
+        "第二教学楼",
+        "二教",
+        "/H2[0-9]{3}/"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "1064792518"
+      ],
+      "position": [
+        30.582693,
+        103.985475
+      ]
+    },
+    {
+      "name": "一食堂",
+      "mustInclude": [
+        "一食堂"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "543937578"
+      ],
+      "position": [
+        30.581829,
+        103.982937
+      ]
+    },
+    {
+      "name": "研究生宿舍楼",
+      "mustInclude": [
+        "研究生宿舍"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "1064798482"
+      ],
+      "position": [
+        30.585683,
+        103.981482
+      ]
+    },
+    {
+      "name": "资环楼",
+      "mustInclude": [
+        "资环楼"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "604096305"
+      ],
+      "position": [
+        30.587081,
+        103.989911
+      ]
+    },
+    {
+      "name": "教职工食堂",
+      "mustInclude": [
+        "教职工食堂"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "604096340"
+      ],
+      "position": [
+        30.585619,
+        103.989024
+      ]
+    },
+    {
+      "name": "信息楼",
+      "mustInclude": [
+        "信息楼"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "1064798461"
+      ],
+      "position": [
+        30.584105,
+        103.988923
+      ]
+    },
+    {
+      "name": "校医院",
+      "mustInclude": [
+        "校医院",
+        "医院"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "604096312"
+      ],
+      "position": [
+        30.584597,
+        103.981294
+      ]
+    },
+    {
+      "name": "行政楼",
+      "mustInclude": [
+        "行政楼"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "1064798469"
+      ],
+      "position": [
+        30.58327,
+        103.989364
+      ]
+    },
+    {
+      "name": "气象楼",
+      "mustInclude": [
+        "气象楼"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "604096308"
+      ],
+      "position": [
+        30.585502,
+        103.990565
+      ]
+    },
+    {
+      "name": "金工楼",
+      "mustInclude": [
+        "金工楼"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "604096306"
+      ],
+      "position": [
+        30.58674,
+        103.990195
+      ]
+    },
+    {
+      "name": "第三教学楼",
+      "mustInclude": [
+        "第三教学楼",
+        "三教",
+        "/H3[0-9]{3}/"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "1306889505"
+      ],
+      "position": [
+        30.583308,
+        103.985479
+      ]
+    },
+    {
+      "name": "宿舍楼",
+      "mustInclude": [
+        "宿舍"
+      ],
+      "keywords": [
+        "栋"
+      ],
+      "weight": 2,
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "604096300",
+        "604096302",
+        "604096295",
+        "604096297",
+        "604096289",
+        "604096292",
+        "604096286",
+        "604096288",
+        "604096283",
+        "604096284",
+        "604096282",
+        "604096285",
+        "604096313",
+        "604096314",
+        "604096315",
+        "604096316",
+        "604096317",
+        "604096325",
+        "604096326"
+      ],
+      "position": [
+        30.583,
+        103.9826
+      ]
+    },
+    {
+      "name": "游泳馆",
+      "mustInclude": [
+        "游泳馆"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "1064792478"
+      ],
+      "position": [
+        30.586402,
+        103.987897
+      ]
+    },
+    {
+      "name": "成信招待所",
+      "mustInclude": [
+        "招待所"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "604096318"
+      ],
+      "position": [
+        30.584974,
+        103.98081
+      ]
+    },
+    {
+      "name": "大气观测场实验室",
+      "mustInclude": [
+        "大气观测场"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "604096361"
+      ],
+      "position": [
+        30.586274,
+        103.989478
+      ]
+    },
+    {
+      "name": "钟楼",
+      "mustInclude": [
+        "钟楼"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "1064798455"
+      ],
+      "weight": 2,
+      "position": [
+        30.583254,
+        103.985094
+      ]
+    },
+    {
+      "name": "第五教学楼",
+      "mustInclude": [
+        "第五教学楼",
+        "五教",
+        "/H5[0-9]{3}/"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "manual-building-2"
+      ],
+      "position": [
+        30.583793,
+        103.987813
+      ]
+    },
+    {
+      "name": "第六教学楼",
+      "mustInclude": [
+        "第六教学楼",
+        "六教",
+        "/H6[0-9]{3}/"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "manual-building-1"
+      ],
+      "position": [
+        30.582978,
+        103.988181
+      ]
+    },
+    {
+      "name": "实验楼A座",
+      "mustInclude": [
+        "实验楼A",
+        "实验楼a"
+      ],
+      "keywords": [
+        "实验楼"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "manual-building-3"
+      ],
+      "position": [
+        30.583513,
+        103.99029
+      ]
+    },
+    {
+      "name": "实验楼B座",
+      "mustInclude": [
+        "实验楼B",
+        "实验楼b"
+      ],
+      "keywords": [
+        "实验楼"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "manual-building-4"
+      ],
+      "position": [
+        30.583217,
+        103.99077
+      ]
+    },
+    {
+      "name": "新气象楼",
+      "mustInclude": [
+        "新气象楼"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "manual-building-7"
+      ],
+      "position": [
+        30.582484,
+        103.988905
+      ]
+    },
+    {
+      "name": "天猫超市",
+      "mustInclude": [
+        "天猫超市"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "manual-building-8"
+      ],
+      "position": [
+        30.58318,
+        103.982768
+      ]
+    },
+    {
+      "name": "第四教学楼",
+      "mustInclude": [
+        "第四教学楼",
+        "四教",
+        "/H4[0-9]{3}/"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "manual-building-9"
+      ],
+      "position": [
+        30.583354,
+        103.986266
+      ]
+    },
+    {
+      "name": "商业街",
+      "mustInclude": [
+        "商业街"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "buildingIds": [
+        "manual-building-11"
+      ],
+      "position": [
+        30.581542,
+        103.984509
+      ]
+    },
+    {
+      "name": "银杏大道",
+      "mustInclude": [
+        "银杏大道"
+      ],
+      "parcelIds": [
+        "p-hw-543937595"
+      ],
+      "position": [
+        30.5845339,
+        103.9827956
+      ],
+      "mustExclude": [
+        "龙泉"
+      ]
+    },
+    {
+      "name": "成信礼堂",
+      "mustInclude": [
+        "礼堂"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "position": [
+        30.5864625,
+        103.9907191
+      ]
+    },
+    {
+      "name": "国际会议厅",
+      "mustInclude": [
+        "国际会议厅"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "position": [
+        30.584668,
+        103.9872777
+      ]
+    },
+    {
+      "name": "第一篮球场",
+      "mustInclude": [
+        "一篮",
+        "第一篮球场"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "position": [
+        30.5842175,
+        103.9836309
+      ],
+      "parcelIds": [
+        "p-604096304"
+      ]
+    },
+    {
+      "name": "第二篮球场",
+      "mustInclude": [
+        "第二篮球场",
+        "二篮"
+      ],
+      "mustExclude": [
+        "龙泉"
+      ],
+      "position": [
+        30.585082,
+        103.9834865
+      ],
+      "parcelIds": [
+        "p-604096309"
+      ]
+    },
+    {
+      "name": "室外乒乓球场",
+      "mustInclude": [
+        "室外乒乓球场",
+        "室外乒乓球"
+      ],
+      "position": [
+        30.5864208,
+        103.9833558
+      ],
+      "parcelIds": [
+        "p-604096311"
+      ]
+    },
+    {
+      "name": "室外羽毛球场",
+      "mustInclude": [
+        "室外羽毛球"
+      ],
+      "position": [
+        30.5862463,
+        103.9833747
+      ],
+      "parcelIds": [
+        "p-1064792460"
+      ]
+    },
+    {
+      "name": "菜鸟驿站（20栋旁）",
+      "mustInclude": [
+        "菜鸟",
+        "驿站"
+      ],
+      "position": [
+        30.5816669,
+        103.9851351
+      ],
+      "mustExclude": [
+        "龙泉"
+      ]
+    },
+    {
+      "name": "菜鸟驿站（研究生宿舍旁）",
+      "mustInclude": [
+        "菜鸟",
+        "驿站"
+      ],
+      "position": [
+        30.5853437,
+        103.9807436
+      ]
+    }
+  ]
+}

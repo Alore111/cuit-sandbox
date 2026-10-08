@@ -1,0 +1,586 @@
+/* ================================================================
+   校园实况面板 — Apple / Meta 级玻璃态设计
+   设计原则：
+   · 信息密度高但不拥挤：12.5px 字号 / 4px 基线 / 16px section padding
+   · 视觉层级：标题 > 彩色微标签 > 地点时间 > 次级描述 > faint metadata
+   · 色彩克制：事件/模块色只用来点缀 1px 左边框、色点、chip的 bg，绝不染满整片背景
+   · 无 emoji 图标，全部用 CSS 画的圆点 + 字体字距字母spacing 实现专业感
+================================================================ */
+
+/* ---------- 容器 ---------- */
+.livePanel {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 0;
+}
+
+/* ---------- 头部 ---------- */
+.liveHead {
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid var(--panel-divider);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: none;
+}
+
+.liveTitleRow {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.livePulse {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #59d1a3;
+    box-shadow: 0 0 0 0 rgba(89, 209, 163, 0.6);
+    animation: liveBreath 2.2s ease-in-out infinite;
+    flex: none;
+}
+
+@keyframes liveBreath {
+    0%, 100%   { box-shadow: 0 0 0 0 rgba(89, 209, 163, 0.55); }
+    50%        { box-shadow: 0 0 0 6px rgba(89, 209, 163, 0); }
+}
+
+.liveTitle {
+    margin: 0;
+    flex: 1;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0;
+    color: var(--text);
+}
+
+.badge {
+    flex: none;
+    padding: 2.5px 8px;
+    font-size: 10px;
+    font-family: var(--font-mono);
+    letter-spacing: 0;
+    border-radius: 6px;
+    border: 1px solid transparent;
+}
+
+.badgeMock {
+    color: var(--text-faint);
+    border-color: var(--panel-border);
+    background: transparent;
+}
+
+.badgeReal {
+    color: var(--amber);
+    border-color: var(--panel-border-strong);
+    background: var(--amber-glow);
+}
+
+.liveMetaRow {
+    display: flex;
+    gap: 12px;
+    font-size: 10.5px;
+    font-family: var(--font-mono);
+    color: var(--text-faint);
+    letter-spacing: 0.04em;
+}
+
+.liveToggleRow {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.liveToggleRow label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 9px;
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-dim);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.liveToggleRow label:hover {
+    border-color: var(--panel-border-strong);
+    color: var(--text);
+}
+
+.liveToggleRow label input {
+    width: 11px;
+    height: 11px;
+    margin: 0;
+    accent-color: var(--amber);
+    cursor: pointer;
+}
+
+/* ---------- 热度统计卡 ---------- */
+.heatStatRow {
+    padding: 12px 16px 4px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    flex: none;
+}
+
+.heatStat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 10px;
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.015);
+}
+
+.heatStatNum {
+    font-family: var(--font-mono);
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.15;
+    letter-spacing: 0.02em;
+}
+
+.heatStat .numCritical { color: #ff3b5c; }
+.heatStat .numHigh     { color: #ff8a3d; }
+
+.heatStatLabel {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--text-faint);
+}
+
+/* ---------- 热度筛选 ---------- */
+.heatFilterRow,
+.filterRow {
+    padding: 8px 16px 4px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    flex: none;
+}
+
+.filterLabel {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--text-faint);
+    flex: none;
+    margin-right: 2px;
+}
+
+.chip {
+    padding: 6px 9px;
+    border: 1px solid var(--panel-border);
+    background: transparent;
+    color: var(--text-dim);
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    font-family: inherit;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.14s, border-color 0.14s, color 0.14s;
+}
+
+.chip:hover {
+    border-color: var(--panel-border-strong);
+    color: var(--text);
+}
+
+.chipActive {
+    border-color: var(--panel-border-strong);
+    color: var(--text);
+    background: var(--amber-glow);
+}
+
+/* 热度 chip 激活时用热度色描边 */
+.chipHeat_critical.chipActive { background: rgba(255, 59, 92, 0.1);   border-color: rgba(255, 59, 92, 0.6);  color: #ff5a77; }
+.chipHeat_high.chipActive     { background: rgba(255, 138, 61, 0.1);  border-color: rgba(255, 138, 61, 0.6); color: #ff9858; }
+.chipHeat_medium.chipActive   { background: rgba(245, 192, 67, 0.1);  border-color: rgba(245, 192, 67, 0.6); color: #f5c756; }
+.chipHeat_low.chipActive      { background: rgba(89, 209, 163, 0.1);  border-color: rgba(89, 209, 163, 0.6);  color: #68d8b0; }
+
+/* ---------- 热度图例 ---------- */
+.heatLegend {
+    padding: 6px 16px 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    flex: none;
+    border-bottom: 1px solid var(--panel-divider);
+}
+
+.heatLegendItem {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10.5px;
+}
+
+.legendText {
+    color: var(--text-dim);
+    letter-spacing: 0.02em;
+}
+
+.legendSub {
+    color: var(--text-faint);
+    font-family: var(--font-mono);
+    margin-left: 3px;
+    font-size: 10px;
+}
+
+/* 通用色点 */
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex: none;
+}
+
+.dotHeat_critical { background: #ff3b5c; box-shadow: 0 0 8px rgba(255, 59, 92, 0.5); }
+.dotHeat_high     { background: #ff8a3d; box-shadow: 0 0 7px rgba(255, 138, 61, 0.5); }
+.dotHeat_medium   { background: #f5c043; box-shadow: 0 0 6px rgba(245, 192, 67, 0.45); }
+.dotHeat_low      { background: #59d1a3; box-shadow: 0 0 5px rgba(89, 209, 163, 0.45); }
+
+/* ---------- Tab 栏 ---------- */
+.tabBar {
+    padding: 10px 16px 0;
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid var(--panel-divider);
+    flex: none;
+}
+
+.tab {
+    position: relative;
+    padding: 10px 8px 12px;
+    margin: 0;
+    border: 0;
+    background: transparent;
+    color: var(--text-faint);
+    font-family: inherit;
+    font-size: 11.5px;
+    letter-spacing: 0;
+    cursor: pointer;
+    transition: color 0.15s;
+    font-weight: 600;
+}
+
+.tab:hover { color: var(--text-dim); }
+
+.tabActive {
+    color: var(--text);
+}
+
+.tabActive::after {
+    content: '';
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: -1px;
+    height: 2px;
+    background: var(--amber);
+    border-radius: 2px;
+}
+
+/* ---------- 列表容器（可滚动） ---------- */
+.list {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+    min-height: 0;
+    flex: 1;
+    overscroll-behavior: contain;
+}
+
+.list::-webkit-scrollbar { width: 5px; }
+.list::-webkit-scrollbar-track { background: transparent; }
+.list::-webkit-scrollbar-thumb {
+    background: var(--panel-border-strong);
+    border-radius: 3px;
+}
+
+.empty {
+    padding: 24px 12px;
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-faint);
+    letter-spacing: 0.08em;
+}
+
+/* ---------- 热度榜行 ---------- */
+.heatRow {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 9px;
+    border-radius: 2px;
+    transition: background 0.15s;
+}
+
+.heatRow:hover {
+    background: rgba(255, 176, 32, 0.06);
+}
+
+.heatRowBody {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.heatRowTitle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.heatRowName {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    min-width: 0;
+}
+
+.heatRowSub {
+    font-size: 10px;
+    color: var(--text-faint);
+    font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+}
+
+.heatBarBg {
+    position: relative;
+    height: 3px;
+    background: var(--panel-divider);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.heatBarFill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.fillHeat_critical { background: #ff3b5c; }
+.fillHeat_high     { background: #ff8a3d; }
+.fillHeat_medium   { background: #f5c043; }
+.fillHeat_low      { background: #59d1a3; }
+
+/* ---------- 事件 / 活动卡片 ---------- */
+.card {
+    position: relative;
+    padding: 12px 12px 12px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--panel-border);
+    background: rgba(255, 255, 255, 0.012);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.card:hover {
+    border-color: var(--panel-border-strong);
+    background: rgba(255, 176, 32, 0.04);
+}
+
+.cardSelected,
+.cardHovered {
+    border-color: var(--card-accent);
+    background: var(--amber-glow);
+}
+
+.eventSelect {
+    display: block;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1.6;
+    text-align: left;
+    cursor: pointer;
+}
+
+.livePanel button:focus-visible,
+.livePanel input:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 3px;
+}
+
+/* 卡片左侧色条：从卡片类别/模块色 */
+.card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 14px;
+    bottom: 14px;
+    width: 2px;
+    border-radius: 999px;
+    background: var(--card-accent, var(--amber));
+}
+
+.cardHead {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.catDot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    margin-top: 5px;
+    flex: none;
+}
+
+.cardHeadText {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.cardTitle {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.4;
+    /* 最多 2 行 */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.cardSub {
+    font-size: 10.5px;
+    color: var(--text-dim);
+    letter-spacing: 0.02em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cardDesc {
+    font-size: 11px;
+    line-height: 1.6;
+    color: var(--text-dim);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.cardFoot {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+/* 标签胶囊（severity / status / 类别 / 人数 / 时间 / 主办方） */
+.tag {
+    padding: 2px 7px;
+    border: 1px solid var(--panel-border);
+    border-radius: 5px;
+    background: transparent;
+    color: var(--text-dim);
+    font-size: 10px;
+    font-family: inherit;
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+    white-space: nowrap;
+    flex: none;
+}
+
+/* 严重度标签 */
+.sev_special { color: #d47bff; border-color: rgba(212, 123, 255, 0.35); background: rgba(212, 123, 255, 0.08); }
+.sev_urgent  { color: #ff4d52; border-color: rgba(255, 77, 82, 0.35);   background: rgba(255, 77, 82, 0.07); }
+.sev_warning { color: #ffb347; border-color: rgba(255, 179, 71, 0.35);  background: rgba(255, 179, 71, 0.07); }
+.sev_info    { color: #7aa8ff; border-color: rgba(122, 168, 255, 0.35); background: rgba(122, 168, 255, 0.07); }
+
+/* 事件状态色 */
+.status_upcoming  { color: #7aa8ff; border-color: rgba(122, 168, 255, 0.4); background: rgba(122, 168, 255, 0.09); }
+.status_ongoing   { color: #59d1a3; border-color: rgba(89, 209, 163, 0.4);  background: rgba(89, 209, 163, 0.09); }
+.status_ended     { color: var(--text-faint); }
+.status_cancelled { color: var(--edit-error); border-color: rgba(255, 107, 107, 0.4); background: rgba(255, 107, 107, 0.07); }
+
+/* 二课活动状态色 */
+.status_available   { color: #59d1a3; border-color: rgba(89, 209, 163, 0.4);  background: rgba(89, 209, 163, 0.09); }
+.status_registered  { color: #7aa8ff; border-color: rgba(122, 168, 255, 0.4); background: rgba(122, 168, 255, 0.09); }
+.status_defaulted   { color: #ff9858; border-color: rgba(255, 152, 88, 0.4);  background: rgba(255, 152, 88, 0.09); }
+.status_unavailable { color: var(--text-faint); }
+
+.tagRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.miniTag {
+    padding: 1.5px 6px;
+    border-radius: 2px;
+    border: 1px dashed var(--panel-border);
+    color: var(--text-faint);
+    font-size: 9.5px;
+    letter-spacing: 0.05em;
+    font-family: var(--font-mono);
+    flex: none;
+}
+
+/* 报名进度条 */
+.enrollBarBg {
+    position: relative;
+    height: 3px;
+    background: var(--panel-divider);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.enrollBarFill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+/* ---------- 响应式：窄屏（< 1400px）把实况面板宽度略微压缩 ---------- */
+@media (max-width: 1440px) {
+    :root { --campus-live-w: 360px; }
+}
+
+@media (max-width: 1280px) {
+    :root { --campus-live-w: 340px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .livePulse { animation: none; }
+    .livePanel * { transition: none; }
+}

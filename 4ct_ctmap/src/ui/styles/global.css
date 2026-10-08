@@ -1,0 +1,93 @@
+/* 全局基础样式与电影质感叠加层 */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-ui);
+    font-size: var(--fs-body);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* 场景底色：垫在画布之下（画布背景透明），承担首帧与穹顶之外的兜底底色。
+   拆成「边缘底色 + 遮罩高光」两层 —— 遮罩负责固定的径向形状，主题色负责颜色，
+   因此切昼夜时颜色可直接参与 CSS 过渡（radial-gradient 本身不可过渡）。 */
+.sceneBackdrop {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-color: var(--scene-edge);
+}
+
+.sceneBackdrop::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: var(--scene-center);
+    -webkit-mask-image: radial-gradient(120% 90% at 68% 14%, #000 0%, #000 46%, transparent 100%);
+    mask-image: radial-gradient(120% 90% at 68% 14%, #000 0%, #000 46%, transparent 100%);
+    /* 伪元素不被通配规则命中，需单独声明过渡 */
+    transition: background-color var(--theme-transition-duration) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 画布铺满整页；背景透明，底色由 .sceneBackdrop 提供 */
+.scene {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* 胶片颗粒：极轻的噪点，抑制大片暗部的色带 */
+.fxGrain {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: var(--grain-opacity);
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+}
+
+/* 暗角：把注意力收到画面中心的沙盘上。
+   同样用「固定几何遮罩 + 主题色」表达，切换昼夜时深浅平滑过渡。 */
+.fxVignette {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-color: var(--vignette-color);
+    -webkit-mask-image: radial-gradient(115% 82% at 52% 46%, transparent 52%, #000 100%);
+    mask-image: radial-gradient(115% 82% at 52% 46%, transparent 52%, #000 100%);
+}
+
+/* 校徽：取 public/LOGO.png 左上角那枚圆徽（原图 1890×441，圆徽落在 x 62–388 / y 53–378）。
+   位图裁切的通用做法 = 整图按「展示宽 / 圆徽原宽」缩放，再把裁切框左上角推到元素外
+   （等价于负位移）。坐标只在 tokens.css 的 --logo-emblem-* 里写一次，
+   使用处只要给 --emblem-mark-size 声明自己要多大 ——
+   HUD 品牌位与移动端顶栏都用这一个类，取像规则只有这一份。 */
+.schoolEmblem {
+    --emblem-mark-scale: calc(var(--emblem-mark-size) / var(--logo-emblem-w));
+
+    /* 承载元素可能是 span，必须块级化才吃得到宽高 */
+    display: block;
+    flex: none;
+    width: var(--emblem-mark-size);
+    height: calc(var(--logo-emblem-h) * var(--emblem-mark-scale));
+    background-image: url('/LOGO.png');
+    background-repeat: no-repeat;
+    background-size: calc(var(--logo-sheet-w) * var(--emblem-mark-scale))
+        calc(var(--logo-sheet-h) * var(--emblem-mark-scale));
+    background-position: calc(var(--logo-emblem-x) * var(--emblem-mark-scale) * -1)
+        calc(var(--logo-emblem-y) * var(--emblem-mark-scale) * -1);
+}

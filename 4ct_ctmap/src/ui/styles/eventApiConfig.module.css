@@ -1,0 +1,458 @@
+/* ================================================================
+   事件接口配置编辑面板 — 与校园实况面板同风格的高密度玻璃态表单
+   ================================================================ */
+
+.configRoot {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    color: var(--text);
+    font-size: 13px;
+}
+
+.configHead {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--panel-divider);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: none;
+}
+
+.configTitle {
+    margin: 0;
+    flex: 1;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.configBadge {
+    padding: 2.5px 8px;
+    font-size: 10px;
+    font-family: var(--font-mono);
+    border-radius: 6px;
+    border: 1px solid var(--panel-border);
+    color: var(--text-faint);
+    background: transparent;
+    white-space: nowrap;
+}
+
+.configBody {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 14px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sectionTitle {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sectionTitle::before {
+    content: '';
+    width: 3px;
+    height: 12px;
+    border-radius: 2px;
+    background: var(--primary);
+    opacity: 0.8;
+}
+
+.fieldRow {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.fieldInline {
+    display: grid;
+    grid-template-columns: 160px 1fr auto;
+    gap: 8px 10px;
+    align-items: center;
+}
+
+@media (max-width: 640px) {
+    .fieldInline {
+        grid-template-columns: 1fr;
+    }
+}
+
+.fieldLabel {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-weight: 500;
+}
+
+.fieldHint {
+    font-size: 11px;
+    color: var(--text-faint);
+    line-height: 1.5;
+}
+
+/* 输入控件：沿用全局 input 默认，在这里补充紧凑尺寸 */
+.textInput,
+.textarea,
+.select {
+    width: 100%;
+    padding: 6px 9px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    font-family: inherit;
+    color: var(--text);
+    background: var(--panel-elevated);
+    border: 1px solid var(--panel-border);
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.textInput:focus,
+.textarea:focus,
+.select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(122, 168, 255, 0.18);
+}
+
+.textarea {
+    min-height: 66px;
+    resize: vertical;
+    font-family: var(--font-mono);
+    font-size: 12px;
+}
+
+.mono {
+    font-family: var(--font-mono);
+    font-size: 12px;
+}
+
+/* headers 编辑区 */
+.headersTable {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.headerRow {
+    display: grid;
+    grid-template-columns: 22px 1fr 1fr 28px;
+    gap: 6px;
+    align-items: center;
+}
+
+.headerRow input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+}
+
+.iconBtn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid var(--panel-border);
+    background: var(--panel-elevated);
+    color: var(--text-dim);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 120ms ease;
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+}
+
+.iconBtn:hover {
+    color: var(--edit-error);
+    border-color: var(--edit-error);
+}
+
+.btnRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 13px;
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1.4;
+    font-family: inherit;
+    border-radius: 7px;
+    border: 1px solid var(--panel-border);
+    background: var(--panel-elevated);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 140ms ease;
+    white-space: nowrap;
+}
+
+.btn:hover {
+    border-color: var(--panel-border-strong);
+    background: var(--panel-hover);
+}
+
+.btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.btnPrimary {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+.btnPrimary:hover {
+    background: #6a94ff;
+    border-color: #6a94ff;
+}
+
+.btnDanger {
+    color: var(--edit-error);
+    border-color: color-mix(in srgb, var(--edit-error) 55%, var(--panel-border));
+}
+
+.btnDanger:hover {
+    background: color-mix(in srgb, var(--edit-error) 10%, transparent);
+}
+
+.btnSuccess {
+    color: var(--heat-low);
+    border-color: color-mix(in srgb, var(--heat-low) 55%, var(--panel-border));
+}
+
+/* 字段映射表格 */
+.mappingTable {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.mappingHead,
+.mappingRow {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr 1.4fr;
+    gap: 8px;
+    padding: 8px 10px;
+    align-items: center;
+}
+
+.mappingHead {
+    background: var(--panel-elevated);
+    border-bottom: 1px solid var(--panel-border);
+    font-size: 11px;
+    color: var(--text-dim);
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.mappingRow + .mappingRow {
+    border-top: 1px solid var(--panel-border);
+}
+
+.mappingKey {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text);
+}
+
+.mappingType {
+    font-size: 11px;
+    color: var(--text-faint);
+    font-family: var(--font-mono);
+}
+
+.mappingRow input {
+    width: 100%;
+}
+
+/* 测试结果区 */
+.testResult {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    padding: 12px;
+    background: var(--panel-elevated);
+}
+
+.testMeta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    font-size: 12px;
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+}
+
+.testMeta strong {
+    color: var(--text);
+    font-weight: 600;
+}
+
+.testOk {
+    color: var(--heat-low);
+    font-weight: 700;
+}
+
+.testFail {
+    color: var(--edit-error);
+    font-weight: 700;
+}
+
+.problemList {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    padding: 8px 10px;
+    background: var(--panel);
+    border-left: 3px solid var(--amber);
+    border-radius: 0 4px 4px 0;
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.problemItem {
+    font-size: 11.5px;
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    line-height: 1.55;
+}
+
+.previewList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 260px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.previewCard {
+    padding: 10px 12px;
+    border: 1px solid var(--panel-border);
+    border-left: 3px solid var(--primary);
+    border-radius: 6px;
+    background: var(--panel);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.previewTitle {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text);
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.previewId {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--text-faint);
+    flex: none;
+}
+
+.previewGrid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 3px 10px;
+    font-size: 11.5px;
+}
+
+.previewGrid dt {
+    color: var(--text-faint);
+    font-weight: 500;
+}
+
+.previewGrid dd {
+    margin: 0;
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.previewDesc {
+    margin: 0;
+    font-size: 11.5px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.footer {
+    padding: 10px 16px;
+    border-top: 1px solid var(--panel-divider);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: space-between;
+    align-items: center;
+    flex: none;
+    background: var(--panel);
+}
+
+.saveMsg {
+    font-size: 11.5px;
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+}
+
+.saveMsg.ok { color: var(--heat-low); }
+.saveMsg.warn { color: var(--amber); }
+.saveMsg.err { color: var(--edit-error); }
+
+.checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-dim);
+    cursor: pointer;
+    user-select: none;
+}
+
+.checkbox input {
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+}

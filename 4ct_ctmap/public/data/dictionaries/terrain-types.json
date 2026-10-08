@@ -1,0 +1,113 @@
+{
+  "version": 1,
+  "types": {
+    "pave": {
+      "label": "铺装广场",
+      "order": 1,
+      "paletteKeys": [
+        "pave",
+        "paveHi"
+      ],
+      "canopy": false,
+      "groundCover": false,
+      "streetLamp": false,
+      "water": false
+    },
+    "concreteRoad": {
+      "label": "水泥路",
+      "order": 2,
+      "paletteKeys": [
+        "concreteRoad",
+        "concreteRoadHi"
+      ],
+      "canopy": false,
+      "groundCover": false,
+      "streetLamp": true,
+      "water": false
+    },
+    "asphalt": {
+      "label": "沥青道路",
+      "order": 3,
+      "paletteKeys": [
+        "asphalt",
+        "asphaltLo"
+      ],
+      "canopy": false,
+      "groundCover": false,
+      "streetLamp": false,
+      "water": false
+    },
+    "grass": {
+      "label": "草坪",
+      "order": 4,
+      "paletteKeys": [
+        "grass",
+        "grassHi",
+        "grassLo"
+      ],
+      "canopy": false,
+      "groundCover": true,
+      "streetLamp": false,
+      "water": false
+    },
+    "grove": {
+      "label": "林地树群",
+      "order": 5,
+      "paletteKeys": [
+        "grove",
+        "groveHi"
+      ],
+      "canopy": true,
+      "groundCover": true,
+      "streetLamp": false,
+      "water": false
+    },
+    "track": {
+      "label": "塑胶跑道",
+      "order": 6,
+      "paletteKeys": [
+        "track",
+        "trackLo"
+      ],
+      "canopy": false,
+      "groundCover": false,
+      "streetLamp": false,
+      "water": false
+    },
+    "court": {
+      "label": "球场",
+      "order": 7,
+      "paletteKeys": [
+        "court",
+        "courtHi"
+      ],
+      "canopy": false,
+      "groundCover": false,
+      "streetLamp": false,
+      "water": false
+    },
+    "bare": {
+      "label": "裸地农田",
+      "order": 8,
+      "paletteKeys": [
+        "bare",
+        "bareLo"
+      ],
+      "canopy": false,
+      "groundCover": false,
+      "streetLamp": false,
+      "water": false
+    },
+    "water": {
+      "label": "水面",
+      "order": 9,
+      "paletteKeys": [
+        "water"
+      ],
+      "canopy": false,
+      "groundCover": false,
+      "streetLamp": false,
+      "water": true
+    }
+  }
+}

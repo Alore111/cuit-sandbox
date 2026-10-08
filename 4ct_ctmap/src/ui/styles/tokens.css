@@ -1,0 +1,151 @@
+/* ================================================================
+   设计令牌（夜 / 昼两套）
+   —— 与 src/render/theme/palette.ts 同一套色系：
+      夜晚是「深蓝夜空 + 琥珀灯火」，白天是「明亮日景 + 深琥珀」。
+      HUD 与 3D 共用这些变量，改色只需改这一处；
+      组件样式一律使用变量，禁止硬编码颜色。
+================================================================ */
+
+:root[data-theme='night'] {
+    --bg: #05070e;
+
+    /* 场景底色与暗角：拆成「固定几何的遮罩 + 主题色」两个令牌。
+       渐变本身无法参与 CSS 过渡，拆开后颜色可直接渐变动画（见 global.css）。 */
+    --scene-center: #1b2440;
+    --scene-edge: #04060c;
+    --vignette-color: rgba(0, 0, 0, 0.35);
+
+    --panel-bg: rgba(16, 23, 36, 0.86);
+    --panel-border: rgba(179, 200, 222, 0.16);
+    --panel-border-strong: rgba(179, 200, 222, 0.38);
+    --panel-divider: rgba(179, 200, 222, 0.1);
+    --panel-shadow: 0 16px 44px rgba(0, 0, 0, 0.28);
+    --callout-bg: rgba(19, 29, 43, 0.9);
+    --callout-shadow: 0 8px 26px rgba(0, 0, 0, 0.22);
+
+    /* 卡片/输入框的抬高底色与悬停底色；主色用于强调（卡片序号、聚焦边框、主按钮） */
+    --panel-elevated: rgba(31, 43, 64, 0.72);
+    --panel-hover: rgba(179, 200, 222, 0.08);
+    --primary: #5b8cff;
+
+    --text: #e2e6f0;
+    --text-dim: #98a2b8;
+    --text-faint: #929db1;
+
+    --amber: #ffb020;
+    --amber-soft: #ffd47a;
+    --amber-glow: rgba(255, 176, 32, 0.14);
+
+    --tooltip-bg: rgba(10, 14, 26, 0.92);
+    --grain-opacity: 0.045;
+    --swatch-border: rgba(0, 0, 0, 0.5);
+
+    /* 编辑器图层色：建筑取冷、地皮取绿、岛面取中性，选中与草图统一走琥珀系 */
+    --edit-building: #6ea8ff;
+    --edit-building-fill: rgba(110, 168, 255, 0.18);
+    --edit-parcel: #57c9a0;
+    --edit-parcel-fill: rgba(87, 201, 160, 0.16);
+    --edit-island: #9aa6bd;
+    --edit-island-fill: rgba(154, 166, 189, 0.08);
+    --edit-sketch: #ff8a3d;
+    --edit-snap: #c07cff;
+    --edit-vertex: #05070e;
+    --edit-marquee: rgba(255, 176, 32, 0.1);
+    --edit-error: #ff6b6b;
+}
+
+:root[data-theme='day'] {
+    --bg: #cfe2f0;
+
+    /* 场景底色与暗角（白天）：形状由遮罩给，颜色由令牌给，便于过渡 */
+    --scene-center: #ffffff;
+    --scene-edge: #b6d4ea;
+    --vignette-color: rgba(31, 41, 51, 0.18);
+
+    --panel-bg: rgba(255, 255, 255, 0.86);
+    --panel-border: rgba(31, 41, 51, 0.14);
+    --panel-border-strong: rgba(31, 41, 51, 0.32);
+    --panel-divider: rgba(31, 41, 51, 0.1);
+    --panel-shadow: 0 14px 36px rgba(31, 41, 51, 0.18);
+    --callout-bg: rgba(255, 255, 255, 0.94);
+    --callout-shadow: 0 8px 26px rgba(31, 41, 51, 0.12);
+
+    /* 卡片/输入框的抬高底色与悬停底色；主色在白底上压暗一档才读得清 */
+    --panel-elevated: rgba(255, 255, 255, 0.94);
+    --panel-hover: rgba(31, 41, 51, 0.05);
+    --primary: #2f6fe0;
+
+    --text: #1f2933;
+    --text-dim: #52606d;
+    --text-faint: #626f7b;
+
+    /* 白底上琥珀必须压暗，否则读不出来 */
+    --amber: #b26a00;
+    --amber-soft: #a16207;
+    --amber-glow: rgba(232, 168, 56, 0.18);
+
+    --tooltip-bg: rgba(255, 255, 255, 0.94);
+    --grain-opacity: 0.06;
+    --swatch-border: rgba(31, 41, 51, 0.25);
+
+    /* 编辑器图层色：白底上整体压暗一档，否则细线在浅色影像上看不清 */
+    --edit-building: #1f5fbf;
+    --edit-building-fill: rgba(31, 95, 191, 0.18);
+    --edit-parcel: #12805c;
+    --edit-parcel-fill: rgba(18, 128, 92, 0.16);
+    --edit-island: #4a5769;
+    --edit-island-fill: rgba(74, 87, 105, 0.06);
+    --edit-sketch: #c2510a;
+    --edit-snap: #7b2fd4;
+    --edit-vertex: #ffffff;
+    --edit-marquee: rgba(178, 106, 0, 0.12);
+    --edit-error: #b3261e;
+}
+
+:root {
+    /* 字号与间距 */
+    --fs-title: 15px;
+    --fs-body: 12.5px;
+    --fs-small: 11px;
+    --fs-tiny: 10px;
+    --gap: 14px;
+    --radius: 14px;
+
+    /* 面板/抽屉宽度：stage 会读这些值做相机安全框偏移 */
+    --roster-w: 244px;
+    --detail-w: 288px;
+    --campus-live-w: 360px;
+    --event-detail-w: 62vw;
+
+    /* 字体：使用系统字体栈，不依赖外网 CDN */
+    --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+
+    /* 校徽取像：public/LOGO.png 是一张 1890×441 的透明底位图，左侧圆徽落在
+       x 62–388 / y 53–378。下面全是对原图的**实测像素**，换图必须重测。
+       HUD 品牌位、移动端顶栏、加载 splash 三处都按这一组取像 —— 坐标只在这里写一次，
+       各处只负责按自己的展示尺寸算缩放比（scale = 展示宽 / --logo-emblem-w）。 */
+    --logo-sheet-w: 1890;
+    --logo-sheet-h: 441;
+    --logo-emblem-x: 62;
+    --logo-emblem-y: 53;
+    --logo-emblem-w: 327;
+    --logo-emblem-h: 326;
+
+    /* 昼夜过渡动画时长（与 3D 侧 themeTransition.ts 的 TRANSITION_DURATION 保持一致） */
+    --theme-transition-duration: 0.8s;
+}
+
+/* 昼夜切换时，HUD 的颜色类属性与 3D 场景同步渐变。
+   用 :where() 把本规则特异性压到 0：任何自带 transition 的规则（悬停动效、
+   逐帧驱动元素）都会覆盖它，因此不会拖慢或改变既有交互。
+   文字颜色走 color 过渡 —— body 与各级文本都吃这条规则，不会出现
+   「面板底色在渐变、文字却瞬间跳色」的对比度塌陷。 */
+:where(:root[data-theme]) * {
+    transition:
+        color var(--theme-transition-duration) cubic-bezier(0.4, 0, 0.2, 1),
+        background-color var(--theme-transition-duration) cubic-bezier(0.4, 0, 0.2, 1),
+        border-color var(--theme-transition-duration) cubic-bezier(0.4, 0, 0.2, 1),
+        box-shadow var(--theme-transition-duration) cubic-bezier(0.4, 0, 0.2, 1),
+        fill var(--theme-transition-duration) cubic-bezier(0.4, 0, 0.2, 1);
+}

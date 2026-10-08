@@ -1,0 +1,157 @@
+{
+  "version": 1,
+  "defaultTypeKey": "generic",
+  "types": {
+    "library": {
+      "label": "图书馆",
+      "floors": 6,
+      "floorHeight": 3.4,
+      "massing": "block",
+      "paletteKey": "library"
+    },
+    "teaching": {
+      "label": "教学楼",
+      "floors": 5,
+      "floorHeight": 3.9,
+      "massing": "block",
+      "paletteKey": "teaching",
+      "wallColor": "#d1b9b8"
+    },
+    "academic": {
+      "label": "院系实验楼",
+      "floors": 5,
+      "floorHeight": 3.8,
+      "massing": "block",
+      "paletteKey": "academic",
+      "wallColor": "#d1b8b7"
+    },
+    "office": {
+      "label": "行政办公楼",
+      "floors": 8,
+      "floorHeight": 3.4,
+      "massing": "block",
+      "paletteKey": "office",
+      "wallColor": "#d4bab9"
+    },
+    "dorm": {
+      "label": "宿舍楼",
+      "floors": 6,
+      "floorHeight": 3.2,
+      "massing": "block",
+      "paletteKey": "dorm",
+      "wallColor": "#cbb1ae"
+    },
+    "canteen": {
+      "label": "食堂",
+      "floors": 2,
+      "floorHeight": 5,
+      "massing": "shed",
+      "paletteKey": "canteen",
+      "wallColor": "#e4cbc3"
+    },
+    "sports": {
+      "label": "体育场馆",
+      "floors": 2,
+      "floorHeight": 8.5,
+      "massing": "arch",
+      "paletteKey": "sports"
+    },
+    "tower": {
+      "label": "钟楼",
+      "floors": 8,
+      "floorHeight": 3.4,
+      "massing": "tower",
+      "paletteKey": "tower",
+      "wallColor": "#d2b6b2"
+    },
+    "clinic": {
+      "label": "校医院",
+      "floors": 2,
+      "floorHeight": 3.6,
+      "massing": "block",
+      "paletteKey": "clinic"
+    },
+    "observatory": {
+      "label": "观测实验站",
+      "floors": 1,
+      "floorHeight": 4.5,
+      "massing": "shed",
+      "paletteKey": "observatory"
+    },
+    "skywalk": {
+      "label": "天桥",
+      "floors": 2,
+      "floorHeight": 3,
+      "massing": "skywalk",
+      "paletteKey": "skywalk",
+      "massingParams": {
+        "deckThicknessMeters": 2,
+        "pillarSpacingMeters": 16,
+        "pillarSizeMeters": 2,
+        "railHeightMeters": 2
+      }
+    },
+    "generic": {
+      "label": "其他建筑",
+      "floors": 3,
+      "floorHeight": 3.6,
+      "massing": "block",
+      "paletteKey": "generic"
+    }
+  },
+  "nameRules": [
+    {
+      "pattern": "图书馆",
+      "type": "library"
+    },
+    {
+      "pattern": "钟楼",
+      "type": "tower"
+    },
+    {
+      "pattern": "天桥|连廊|廊桥",
+      "type": "skywalk"
+    },
+    {
+      "pattern": "食堂",
+      "type": "canteen"
+    },
+    {
+      "pattern": "体育馆|文体馆|游泳馆|风雨操场",
+      "type": "sports"
+    },
+    {
+      "pattern": "教学楼",
+      "type": "teaching"
+    },
+    {
+      "pattern": "宿舍|公寓|招待所|宾馆",
+      "type": "dorm"
+    },
+    {
+      "pattern": "医院|医务",
+      "type": "clinic"
+    },
+    {
+      "pattern": "观测|气象站|实验站",
+      "type": "observatory"
+    },
+    {
+      "pattern": "行政|办公|管理处",
+      "type": "office"
+    },
+    {
+      "pattern": "楼|馆|院|中心",
+      "type": "academic"
+    }
+  ],
+  "kindRules": {
+    "apartments": "dorm",
+    "dormitory": "dorm",
+    "university": "academic",
+    "college": "academic",
+    "school": "academic",
+    "hospital": "clinic",
+    "yes": "generic"
+  }
+}

@@ -1,0 +1,202 @@
+/* 加载与错误遮罩：任何失败都必须有明确文字，不留空白画面 */
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: var(--bg);
+}
+
+/* 错误遮罩自己的淡入。加载 splash 的透明度由 GSAP 接管 ——
+   CSS 动画的优先级高于内联样式，两边同时动 opacity 会互相打架，
+   所以把淡入拆成独立类，只给错误遮罩用。 */
+.overlayFade {
+    animation: fadeIn 0.35s ease both;
+}
+
+.inner {
+    max-width: 560px;
+    text-align: center;
+}
+
+.title {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    color: var(--amber);
+}
+
+.sub {
+    margin-top: 9px;
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    line-height: 1.7;
+    color: var(--text-faint);
+    word-break: break-word;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* ================================================================
+   品牌 splash（圆徽 + 校名）
+   —— public/LOGO.png 是「一张」1890×441 的透明底位图，圆徽与校名要分别
+      动效，因此按原图像素坐标裁切取像：每个裁切块只声明自己的 --crop-*，
+      统一的取像缩放交给 --logo-scale。
+
+   圆徽那一块的坐标（x 62–388 / y 53–378）已提到 tokens.css 的 --logo-emblem-*，
+   与 HUD 品牌位、移动端顶栏共用；下面是**校名**的实测像素（换图必须重测）：
+     中文行     y 94–252
+     成 467–652 · 都 657–828 · 信 833–993 · 息 999–1165
+     工 1170–1349 · 程 1354–1559 · 大 1565–1702 · 学 1704–1859
+     英文行     x 467–1859  y 281–338
+   「都」在图上被拆成「者 / 阝」两段（657–736、739–828），此处已并回一个字。
+================================================================ */
+
+.splash {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+
+    /* 圆徽展示宽度上限 */
+    --emblem-max-size: 132px;
+    /* 校名总宽（原图像素）：8 个字 1366 + 7 个字距 5 */
+    --name-w-src: 1401;
+
+    /* 全屏统一的取像缩放比。min() 的第二项保证校名在任何视口都不溢出：
+       可用宽度 = 视口宽 − 左右 24px 内边距。 */
+    --logo-scale: min(
+        calc(var(--emblem-max-size) / var(--logo-emblem-w)),
+        calc((100vw - 48px) / var(--name-w-src))
+    );
+    /* 圆徽展示尺寸由缩放比反推，保证与校名同比例 */
+    --emblem-size: calc(var(--logo-emblem-w) * var(--logo-scale));
+    /* 取像偏移要把裁切框左上角推到元素外，等价于负缩放 */
+    --logo-offset-scale: calc(var(--logo-scale) * -1);
+}
+
+/* 位图裁切块：原图 1:1 取像后整体缩放，元素尺寸即裁切框尺寸。
+   注意 --crop-* 只允许在具体块上声明 —— 自定义属性不比继承弱，
+   若在这里写默认值，会盖掉父级 .nameCn 传下来的纵向裁切框。 */
+.crop {
+    /* 校名逐字用小元素承载裁切块，必须是块级才能吃到 width/height 与位移 */
+    display: block;
+    background-image: url('/LOGO.png');
+    background-repeat: no-repeat;
+    background-size: calc(var(--logo-sheet-w) * var(--logo-scale))
+        calc(var(--logo-sheet-h) * var(--logo-scale));
+    background-position: calc(var(--crop-x) * var(--logo-offset-scale))
+        calc(var(--crop-y) * var(--logo-offset-scale));
+    width: calc(var(--crop-w) * var(--logo-scale));
+    height: calc(var(--crop-h) * var(--logo-scale));
+}
+
+/* 圆徽舞台：光晕环与圆徽叠放 */
+.logoStage {
+    position: relative;
+    display: grid;
+    place-items: center;
+}
+
+.emblem {
+    --crop-x: var(--logo-emblem-x);
+    --crop-y: var(--logo-emblem-y);
+    --crop-w: var(--logo-emblem-w);
+    --crop-h: var(--logo-emblem-h);
+    /* 入场从模糊到清晰：终值显式写成 blur(0px)，GSAP 才能从 blur(12px) 插值 */
+    filter: blur(0);
+}
+
+/* 圆徽外扩光环：纯 CSS 环形，不走位图，颜色跟随主题主色 */
+.halo {
+    position: absolute;
+    width: calc(var(--emblem-size) * 1.52);
+    height: calc(var(--emblem-size) * 1.52);
+    border: 1px solid var(--primary);
+    border-radius: 50%;
+    opacity: 0.45;
+}
+
+.name {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* 原图中文行底(252) 到英文行顶(281) 的间距 */
+    gap: calc(29 * var(--logo-scale));
+}
+
+/* 中文校名：纵向裁切框由本行统一下发给 8 个字 */
+.nameCn {
+    --crop-y: 94;
+    --crop-h: 159;
+    display: flex;
+    align-items: flex-end;
+    /* 原图字距约 5px，拆开后按同一间距重排 */
+    gap: calc(5 * var(--logo-scale));
+}
+
+.char1 { --crop-x: 467; --crop-w: 186; }
+.char2 { --crop-x: 657; --crop-w: 172; }
+.char3 { --crop-x: 833; --crop-w: 161; }
+.char4 { --crop-x: 999; --crop-w: 167; }
+.char5 { --crop-x: 1170; --crop-w: 180; }
+.char6 { --crop-x: 1354; --crop-w: 206; }
+.char7 { --crop-x: 1565; --crop-w: 138; }
+.char8 { --crop-x: 1704; --crop-w: 156; }
+
+.nameEn {
+    --crop-x: 467;
+    --crop-y: 281;
+    --crop-w: 1393;
+    --crop-h: 58;
+}
+
+.caption {
+    text-align: center;
+}
+
+/* 不确定进度光带：世界构建没有进度上报，不做假的百分比进度 */
+.progress {
+    position: relative;
+    width: clamp(120px, 34vw, 168px);
+    height: 2px;
+    overflow: hidden;
+    border-radius: 2px;
+    background: var(--panel-divider);
+}
+
+.progressBar {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 38%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    animation: progressSweep 1.4s linear infinite;
+}
+
+/* 条宽 38%：从完全移出左侧到完全移出右侧 = 100 / 38 ≈ 263% 自身宽度 */
+@keyframes progressSweep {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(263%);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .progressBar {
+        animation: none;
+    }
+}
