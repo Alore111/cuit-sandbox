@@ -61,6 +61,10 @@ npm run dev:all      # 同时起后端(3001) 与前端(5173)
 | 后端 | Node · Express · TypeScript（tsx 直跑）· JSON 文件存储 |
 | 契约 | 前后端各持一份逐字一致的 `src/contract/`，独立安装、独立部署 |
 
+## 开源协议
+
+本项目基于 [MIT License](./LICENSE) 开源，版权归属 Alore。
+
 ## 注意事项
 
 - **先起后端再起前端**，否则前端取数失败（自检 `npm run check` 同样需要后端在跑）；

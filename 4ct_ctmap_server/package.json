@@ -3,6 +3,7 @@
   "version": "0.2.0",
   "private": true,
   "type": "module",
+  "license": "MIT",
   "description": "4CT 校园沙盘后端",
   "scripts": {
     "dev": "tsx watch src/index.ts",
